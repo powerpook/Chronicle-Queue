@@ -421,6 +421,7 @@ public class RollCycleMultiThreadStressTest extends QueueTestCommon {
                 int lastTailerCycle = -1;
                 int lastQueueCycle = -1;
                 Jvm.pause(random.nextInt(DELAY_READER_RANDOM_MS));
+                tailer.toStart();
                 while (lastRead != expectedNumberOfMessages - 1) {
                     if (Thread.currentThread().isInterrupted())
                         return null;
