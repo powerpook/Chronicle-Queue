@@ -116,6 +116,7 @@ public class RollCycleMultiThreadStressTest extends QueueTestCommon {
 
     @Test
     public void stress() throws Exception {
+        finishedNormally = false;
         assert warnIfAssertsAreOn();
 
         File file = DirectoryUtils.tempDir("stress");
@@ -289,6 +290,7 @@ public class RollCycleMultiThreadStressTest extends QueueTestCommon {
 
         IOTools.deleteDirWithFiles("stress");
         // System.out.println("Test complete");
+        finishedNormally = true;
     }
 
     protected ReaderCheckingStrategy getReaderCheckingStrategy() {
