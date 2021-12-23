@@ -43,6 +43,7 @@ public abstract class AbstractTSQueueLock extends AbstractCloseable implements C
     protected static final long PID = getProcessId();
     public static final long UNLOCKED = 1L << 63;
     protected final boolean dontRecoverLockTimeout = Jvm.getBoolean("queue.dont.recover.lock.timeout");
+    protected final boolean onlyUnlockIfProcessDead = Jvm.getBoolean("queue.lock.recover.dead.process");
 
     protected final LongValue lock;
     protected final ThreadLocal<TimingPauser> pauser;

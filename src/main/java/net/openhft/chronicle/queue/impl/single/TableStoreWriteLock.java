@@ -88,11 +88,16 @@ public class TableStoreWriteLock extends AbstractTSQueueLock implements WriteLoc
                     "Lock was held by " + lockedBy;
             if (dontRecoverLockTimeout)
                 throw new UnrecoverableTimeoutException(new IllegalStateException(warningMsg + UNLOCK_MAIN_MSG));
-            warn().on(getClass(), warningMsg + ". Unlocking forcibly");
-            forceUnlock(value);
-            // we should reset the pauser after a timeout exception
-            tlPauser.reset();
-            lock();
+            else if (onlyUnlockIfProcessDead) {
+                if (forceUnlockIfProcessIsDead())
+                    lock();
+                else
+                    throw new UnrecoverableTimeoutException(new IllegalStateException(warningMsg + UNLOCK_MAIN_MSG));
+            } else {
+                warn().on(getClass(), warningMsg + ". Unlocking forcibly");
+                forceUnlock(value);
+                lock();
+            }
         } finally {
             tlPauser.reset();
         }

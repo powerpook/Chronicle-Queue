@@ -109,6 +109,20 @@ public class TableStoreWriteLockTest extends QueueTestCommon {
         }
     }
 
+    @Test(timeout = 5_000, expected = UnrecoverableTimeoutException.class)
+    public void lockWillThrowExceptionAfterTimeoutWhenOnlyUnlockIfProcessDeadIsTrue() throws InterruptedException {
+        System.setProperty("queue.lock.recover.dead.process", "true");
+        try (final TableStoreWriteLock testLock = createTestLock(tableStore, 50)) {
+            Thread t = new Thread(testLock::lock);
+            t.start();
+            t.join();
+            testLock.lock();
+            fail("Should have thrown trying to lock()");
+        } finally {
+            System.clearProperty("queue.lock.recover.dead.process");
+        }
+    }
+
     @Test(timeout = 5_000)
     public void unlockWillWarnIfNotLocked() {
         try (final TableStoreWriteLock testLock = createTestLock()) {
